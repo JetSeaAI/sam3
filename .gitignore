@@ -138,6 +138,7 @@ sam3_logs/
 *.pickle
 *.npy
 *.npz
+*.mp4
 
 # Logs
 logs/
@@ -151,3 +152,4 @@ Thumbs.db
 # BPE vocabulary files
 *.bpe
 *.vocab
+

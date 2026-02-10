@@ -19,32 +19,26 @@ RUN pip install --no-cache-dir ".[train,notebooks,dev]"
 
 # --- 階段 2：最終運行環境 (Final) ---
 FROM nvidia/cuda:12.8.1-cudnn-runtime-ubuntu22.04
-
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
     PATH="/usr/local/bin:$PATH"
-
-# 只安裝運行時必備的系統庫
+# 1. 除了 python3-dev，補上 libpython3.10-dev 與 pkg-config，確保編譯器能找到路徑
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 python3-pip python3-venv git libgl1 libglib2.0-0 \
+    python3 python3-pip python3-venv python3-dev libpython3.10-dev \
+    git libgl1 libglib2.0-0 build-essential pkg-config \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/python3 /usr/bin/python
-
-# 從 Builder 階段把安裝好的 Python 套件全部搬過來
-# 這會直接捨棄掉所有過程中的快取與暫存檔
+# 2. 修正 libcuda 連結問題 (Triton 必備)
+RUN ln -s /usr/lib/x86_64-linux-gnu/libcuda.so.1 /usr/lib/x86_64-linux-gnu/libcuda.so || true
+# ... 搬運套件指令保持不變 ...
 COPY --from=builder /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 COPY --from=builder /usr/local/share/jupyter /usr/local/share/jupyter
-
 # 修正 Jupyter 路徑問題
 RUN mkdir -p /usr/share/jupyter && \
     ln -s /usr/local/share/jupyter/lab /usr/share/jupyter/lab
-
 WORKDIR /app
 COPY . .
-
-# 重新以不可編輯模式安裝，確保進入路徑正確
 RUN pip install --no-cache-dir .
-
 EXPOSE 8888
 CMD ["/bin/bash"]

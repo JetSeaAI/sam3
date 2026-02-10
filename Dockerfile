@@ -34,6 +34,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # 這會直接捨棄掉所有過程中的快取與暫存檔
 COPY --from=builder /usr/local/lib/python3.10/dist-packages /usr/local/lib/python3.10/dist-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /usr/local/share/jupyter /usr/local/share/jupyter
+
+# 修正 Jupyter 路徑問題
+RUN mkdir -p /usr/share/jupyter && \
+    ln -s /usr/local/share/jupyter/lab /usr/share/jupyter/lab
 
 WORKDIR /app
 COPY . .

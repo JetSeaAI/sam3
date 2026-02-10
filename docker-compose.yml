@@ -1,0 +1,26 @@
+services:
+  sam3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sam3-container
+    shm_size: '16gb' # 訓練通常需要較大的共享記憶體
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      - .:/app
+      - ./data:/app/data # 掛載數據目錄
+      - ./checkpoints:/app/checkpoints # 掛載模型權重目錄
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - PYTHONPATH=/app
+    ports:
+      - "8888:8888" # Jupyter Notebook
+    stdin_open: true
+    tty: true
+    working_dir: /app

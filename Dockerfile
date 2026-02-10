@@ -26,8 +26,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # 只安裝運行時必備的系統庫
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 python3-pip libgl1 libglib2.0-0 \
-    && rm -rf /var/lib/apt/lists/*
+    python3 python3-pip python3-venv git libgl1 libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/bin/python3 /usr/bin/python
 
 # 從 Builder 階段把安裝好的 Python 套件全部搬過來
 # 這會直接捨棄掉所有過程中的快取與暫存檔

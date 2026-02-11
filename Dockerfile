@@ -25,7 +25,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 # 1. 除了 python3-dev，補上 libpython3.10-dev 與 pkg-config，確保編譯器能找到路徑
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 python3-pip python3-venv python3-dev libpython3.10-dev \
-    git libgl1 libglib2.0-0 build-essential pkg-config \
+    git libgl1 libglib2.0-0 build-essential pkg-config ffmpeg\
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /usr/bin/python3 /usr/bin/python
 # 2. 修正 libcuda 連結問題 (Triton 必備)

@@ -95,6 +95,21 @@ pip install -e ".[notebooks]"
 pip install -e ".[train,dev]"
 ```
 
+5. **Install using docker:**
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/facebookresearch/sam3.git
+cd sam3
+# 2. Build the docker image
+docker compose build
+# 3. Huggingface authentication
+pip install --upgrade huggingface_hub
+hf auth login
+# 4. Run the docker container
+docker compose up -d
+```
+
 ## Getting Started
 
 ⚠️ Before using SAM 3, please request access to the checkpoints on the SAM 3

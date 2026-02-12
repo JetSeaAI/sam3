@@ -11,11 +11,12 @@ services:
           devices:
             - driver: nvidia
               count: all
-              capabilities: [gpu]
+              capabilities: [ gpu ]
     volumes:
       - .:/app
       - ./data:/app/data # 掛載數據目錄
       - ./checkpoints:/app/checkpoints # 掛載模型權重目錄
+      - ~/.cache/huggingface:/root/.cache/huggingface # 掛載本機 Hugging Face 快取 (含 token)
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - PYTHONPATH=/app
